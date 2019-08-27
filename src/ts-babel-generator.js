@@ -202,6 +202,12 @@ console.info('Installing dependencies...');
 shell.exec('npm install --save-dev typescript @babel/core @babel/cli @babel/plugin-proposal-class-properties @babel/plugin-proposal-object-rest-spread @babel/preset-env @babel/preset-typescript @babel/plugin-proposal-numeric-separator', { silent: true });
 
 /**
+ * Install any other dependencies that are needed.
+ */
+if (program.webpack) shell.exec('npm install --save-dev webpack webpack-cli babel-loader');
+if (program.rollup) shell.exec('npm install --save-dev rollup rollup-plugin-babel@latest rollup-plugin-node-resolve rollup-plugin-commonjs');
+
+/**
  * Set up the initial tsconfig.json config file.
  */
 console.info('Creating tsconfig.json file...');

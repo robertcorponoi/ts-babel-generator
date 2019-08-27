@@ -1,6 +1,6 @@
 {
   "name": "ts-babel-generator",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Generates a typescript with babel project as described by https://github.com/Microsoft/TypeScript-Babel-Starter",
   "bin": "src/ts-babel-generator.js",
   "scripts": {},
