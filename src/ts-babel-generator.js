@@ -28,6 +28,7 @@ program.version(pkg.version);
 program.option('-n, --name <project>', 'The name of the project to create', 'my-project');
 program.option('-w, --webpack', 'Indicates webpack should be added to the project', false);
 program.option('-r, --rollup', 'Indicates rollup should be added to the project', false);
+program.option('-g, --git', 'Indicates that this project is going to be using git and adds a .gitignore file to it', true);
 program.option('-o, --output <path>', 'The path to the directory to output the project to', process.cwd());
 
 program.parse(process.argv);
@@ -80,6 +81,8 @@ fs.ensureDirSync(projectDir);
 fs.ensureDirSync(srcDir);
 
 fs.ensureFileSync(path.resolve(srcDir, 'index.ts'));
+
+if (program.git) fs.copyFileSync('./.gitignore', projectDir);
 
 /**
  * Create and write webpack/rollup configuration files if requested.

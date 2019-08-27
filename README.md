@@ -56,6 +56,7 @@ ts-babel-generator [options]
 -n, --name          Specify the name of the project. ('my-project')
 -o, --output        Specify the directory to save the the project (current working directory)
 -w, --webpack       Indicates whether webpack should be used for this project. (false)
+-g, --git           Indicates that this project is going to be using git and adds a .gitignore file to it. (true)
 -r, --rollup        Indicates whether rollup should be used for this project. (false)
 ```
 
