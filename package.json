@@ -1,0 +1,28 @@
+{
+  "name": "ts-babel-generator",
+  "version": "0.1.0",
+  "description": "Generates a typescript with babel project as described by https://github.com/Microsoft/TypeScript-Babel-Starter",
+  "bin": "src/ts-babel-generator.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:robertcorponoi/ts-babel-generator"
+  },
+  "keywords": [
+    "ts",
+    "typescript",
+    "babel",
+    "generator",
+    "webpack",
+    "rollup",
+    "project"
+  ],
+  "author": "Robert Corponoi",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^3.0.0",
+    "fs-extra": "^8.1.0",
+    "shelljs": "^0.8.3"
+  },
+  "devDependencies": {}
+}
