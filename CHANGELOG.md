@@ -1,3 +1,7 @@
+0.3.1 / 2019-09-30
+==================
+* [HOTFIX] Removed traces of ava that caused errors on install.
+
 0.3.0 / 2019-09-30
 ==================
 * [HOTFIX] Removed ts imports since we're not using ts (yet).
