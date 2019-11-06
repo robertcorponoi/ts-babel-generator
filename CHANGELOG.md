@@ -1,3 +1,7 @@
+0.3.2 / 2019-11-05
+==================
+* [FEATURE] Updated dependencies to their latest versions.
+
 0.3.1 / 2019-09-30
 ==================
 * [HOTFIX] Removed traces of ava that caused errors on install.
