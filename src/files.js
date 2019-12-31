@@ -4,7 +4,6 @@
  * Contains the string or Object representations of different files that need to be created by the application.
  */
 module.exports = {
-
   /**
    * Returns the Object containing the package.json file.
    * 
@@ -13,7 +12,6 @@ module.exports = {
    * @returns {Object}
    */
   pkgJSON(name) {
-
     return {
       name: name,
       version: "0.1.0",
@@ -32,7 +30,6 @@ module.exports = {
       author: '',
       license: 'MIT'
     };
-
   },
 
   /**
@@ -41,7 +38,6 @@ module.exports = {
    * @returns {Object}
    */
   babelRC() {
-
     return {
       presets: [
         "@babel/env",
@@ -53,7 +49,6 @@ module.exports = {
       ]
 
     }
-
   },
 
   /**
@@ -62,7 +57,6 @@ module.exports = {
    * @returns {string}
    */
   gitignore() {
-
     return `# Logs
 logs
 *.log
@@ -136,7 +130,6 @@ typings/
 
 # Serverless directories
 .serverless`
-
   },
 
   /**
@@ -145,7 +138,6 @@ typings/
    * @returns {string}
    */
   webpackConfig() {
-
     return `const path = require('path');
 
 module.exports = {
@@ -167,7 +159,6 @@ module.exports = {
     }],
   }
 };`
-
   },
 
   /**
@@ -176,7 +167,6 @@ module.exports = {
    * @returns {string}
    */
   rollupConfig() {
-
     return `import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
@@ -221,7 +211,5 @@ export default {
     globals: {},
   }],
 };`
-
   }
-
 };

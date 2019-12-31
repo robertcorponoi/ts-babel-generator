@@ -8,36 +8,41 @@ const program = require('commander');
 const files = require('./files');
 const pkg = require('../package.json');
 
+let projectName;
+
 /**
  * Set the program version from the current version of ts-babel-generator from package.json
  */
 program.version(pkg.version);
 
 /**
+ * Define the name of the project to create as an argument.
+ */
+program.arguments('<name>').action(name => projectName = name);
+
+/**
  * Define the options that can be passed to the cli.
  * 
- * -n, --name     The name of the project to create.
- * -w, --webpack  Indicates webpack should be added to the project.
- * -r, --rollup   Indicates rollup should be added to the project.
- * -o, --output   The path to the directory to output the project to.
- * -s, --silent   Indicates whether output should be hidden or not.
+ * -w, --webpack    Indicates webpack should be added to the project.
+ * -r, --rollup     Indicates rollup should be added to the project.
+ * -o, --output     The path to the directory to output the project to.
+ * -s, --silent     Indicates whether output should be hidden or not.
  */
-program.option('-n, --name <project>', 'The name of the project to create', 'my-project');
 program.option('-w, --webpack', 'Indicates webpack should be added to the project', false);
 program.option('-r, --rollup', 'Indicates rollup should be added to the project', false);
 program.option('-g, --git', 'Indicates that this project is going to be using git and adds a .gitignore file to it', true);
 program.option('-o, --output <path>', 'The path to the directory to output the project to', process.cwd());
-program.option('-s --silent', 'Indicates whether output should be hidden or not', true);
+program.option('-s, --silent', 'Indicates whether output should be hidden or not', true);
 
 program.parse(process.argv);
 
 /**
  * Get the references to the Objects needed for the configuration files.
  */
-const pkgJSON = files.pkgJSON(program.name);
+const pkgJSON = files.pkgJSON(projectName);
 const babelRC = files.babelRC();
 
-const projectDir = path.resolve(program.output, program.name);
+const projectDir = path.resolve(program.output, projectName);
 
 const pkgJSONDir = path.resolve(projectDir, 'package.json');
 const babelDir = path.resolve(projectDir, '.babelrc');
@@ -63,7 +68,6 @@ fs.ensureFileSync(path.resolve(srcDir, 'index.ts'));
  * Create and write webpack/rollup configuration files if requested.
  */
 if (program.webpack) {
-
   const webpackConfig = files.webpackConfig();
 
   pkgJSON.scripts.bundle = 'webpack';
@@ -73,24 +77,21 @@ if (program.webpack) {
   if (!program.silent) console.info('Adding webpack...');
 
   fs.writeFileSync(webpackConfigDir, webpackConfig);
-
 }
 
 if (program.rollup) {
-
   const rollupConfig = files.rollupConfig();
 
   pkgJSON.scripts.bundle = 'rollup -c';
   pkgJSON.scripts['bundle:watch'] = 'rollup -c --watch';
 
-  pkgJSON.module = `${program.name}.js`;
+  pkgJSON.module = `${projectName}.js`;
 
   const rollupConfigDir = path.resolve(projectDir, 'rollup.config.js');
 
   if (!program.silent) console.info('Adding rollup...');
 
   fs.writeFileSync(rollupConfigDir, rollupConfig);
-
 }
 
 /**

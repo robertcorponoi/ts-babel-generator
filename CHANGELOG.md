@@ -1,6 +1,16 @@
+1.0.0 / 2019-12-30
+==================
+* [FEATURE] Removed the -n, --name option and made the project name into an argument.
+* [MISC] Updated dependencies to their latest versions.
+* [MISC] Added more badges to README.
+* [MISC] Updated README to match latest API.
+* [MISC] Updated testing to match latest API.
+* [MISC] Removed table of contents from README as it's too short to need one.
+* [MISC] Added logo.
+
 0.3.2 / 2019-11-05
 ==================
-* [FEATURE] Updated dependencies to their latest versions.
+* [MISC] Updated dependencies to their latest versions.
 
 0.3.1 / 2019-09-30
 ==================

@@ -1,7 +1,7 @@
 {
   "name": "ts-babel-generator",
-  "version": "0.3.2",
-  "description": "Generates a typescript with babel project as described by https://github.com/Microsoft/TypeScript-Babel-Starter",
+  "version": "1.0.0",
+  "description": "Generates a typescript with babel project based on https://github.com/Microsoft/TypeScript-Babel-Starter",
   "bin": "src/ts-babel-generator.js",
   "scripts": {
     "test": "mocha"
@@ -22,7 +22,7 @@
   "author": "Robert Corponoi",
   "license": "MIT",
   "dependencies": {
-    "commander": "^4.0.0",
+    "commander": "^4.0.1",
     "fs-extra": "^8.1.0",
     "shelljs": "^0.8.3"
   },

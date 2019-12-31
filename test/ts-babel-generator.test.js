@@ -6,168 +6,76 @@ const fs = require('fs-extra');
 const shell = require('shelljs');
 const pkg = require('../package.json');
 
+after(function(done) {
+  this.timeout(300000);
+
+  fs.removeSync(path.resolve(__dirname, '..', 'testproject'));
+  fs.removeSync(path.resolve(__dirname, '..', 'testprojectwebpack'));
+  fs.removeSync(path.resolve(__dirname, '..', 'testprojectrollup'));
+
+  done();
+});
+
 describe('Testing CLI commands', () => {
-
-  after(() => fs.removeSync(path.resolve(__dirname, '..', 'helloworld')));
-
   it('should print the correct version of the program', done => {
-
     const cmd = shell.exec('node src/ts-babel-generator -V', { async: true });
 
     cmd.stdout.on('data', data => {
-
       chai.expect(data).to.equal(pkg.version + '\n');
 
       done();
-
     });
-
   });
 
-  it('should create the correct project structure for a project with just a name', function (done) {
+  it('should create a basic project', function (done) {
+    this.timeout(140000);
 
-    this.timeout(60000);
-
-    shell.exec('node src/ts-babel-generator.js -n helloworld -s', { async: true });
+    shell.exec('node src/ts-babel-generator testproject -s', { async: true });
 
     setTimeout(() => {
+      const dir = path.resolve(__dirname, '..', 'testproject');
 
-      const dir = path.resolve(__dirname, '..', 'helloworld');
+      const srcFolderExists = fs.existsSync(path.resolve(dir, 'src'));
+      const indexFileExists = fs.existsSync(path.resolve(dir, 'src', 'index.ts'));
 
-      const nodeModules = fs.existsSync(path.resolve(dir, 'node_modules'));
+      const babelrcExists = fs.existsSync(path.resolve(dir, '.babelrc'));
+      const tsConfigExists = fs.existsSync(path.resolve(dir, 'tsconfig.json'));
 
-      const src = fs.existsSync(path.resolve(dir, 'src'));
-
-      const indexTs = fs.existsSync(path.resolve(dir, 'src', 'index.ts'));
-
-      const packageJSON = fs.existsSync(path.resolve(dir, 'package.json'));
-
-      const packageLockJSON = fs.existsSync(path.resolve(dir, 'package-lock.json'));
-
-      const babelRC = fs.existsSync(path.resolve(dir, '.babelrc'));
-
-      const tsConfig = fs.existsSync(path.resolve(dir, 'tsconfig.json'));
-
-      chai.expect(nodeModules).to.be.true &&
-
-        chai.expect(src).to.be.true &&
-
-        chai.expect(src).to.be.true &&
-
-        chai.expect(indexTs).to.be.true &&
-
-        chai.expect(packageJSON).to.be.true &&
-
-        chai.expect(packageLockJSON).to.be.true &&
-
-        chai.expect(babelRC).to.be.true &&
-
-        chai.expect(tsConfig).to.be.true;
+      chai.expect(srcFolderExists).to.be.true && chai.expect(indexFileExists).to.be.true && chai.expect(babelrcExists).to.be.true && chai.expect(tsConfigExists).to.be.true;
 
       done();
-
-    }, 50000);
-
+    }, 120000);
   });
 
-  it('should create the correct project structure for a project with webpack', function (done) {
+  it('should create a basic project with webpack', function (done) {
+    this.timeout(140000);
 
-    this.timeout(60000);
-
-    shell.exec('node src/ts-babel-generator.js -n helloworld -s -w', { async: true });
+    shell.exec('node src/ts-babel-generator testprojectwebpack -w -s', { async: true });
 
     setTimeout(() => {
+      const dir = path.resolve(__dirname, '..', 'testprojectwebpack');
 
-      const dir = path.resolve(__dirname, '..', 'helloworld');
+      const webpackConfigExists = fs.existsSync(path.resolve(dir, 'webpack.config.js'));
 
-      const nodeModules = fs.existsSync(path.resolve(dir, 'node_modules'));
-
-      const src = fs.existsSync(path.resolve(dir, 'src'));
-
-      const indexTs = fs.existsSync(path.resolve(dir, 'src', 'index.ts'));
-
-      const packageJSON = fs.existsSync(path.resolve(dir, 'package.json'));
-
-      const packageLockJSON = fs.existsSync(path.resolve(dir, 'package-lock.json'));
-
-      const babelRC = fs.existsSync(path.resolve(dir, '.babelrc'));
-
-      const tsConfig = fs.existsSync(path.resolve(dir, 'tsconfig.json'));
-
-      const webpackConfig = fs.existsSync(path.resolve(dir, 'webpack.config.js'));
-
-      chai.expect(nodeModules).to.be.true &&
-
-        chai.expect(src).to.be.true &&
-
-        chai.expect(src).to.be.true &&
-
-        chai.expect(indexTs).to.be.true &&
-
-        chai.expect(packageJSON).to.be.true &&
-
-        chai.expect(packageLockJSON).to.be.true &&
-
-        chai.expect(babelRC).to.be.true &&
-
-        chai.expect(tsConfig).to.be.true &&
-
-        chai.expect(webpackConfig).to.be.true;
+      chai.expect(webpackConfigExists).to.be.true;
 
       done();
-
-    }, 50000);
-
+    }, 120000);
   });
 
-  it('should create the correct project structure for a project with rollup', function (done) {
+  it('should create a basic project with rollup', function (done) {
+    this.timeout(140000);
 
-    this.timeout(60000);
-
-    shell.exec('node src/ts-babel-generator.js -n helloworld -s -r', { async: true });
+    shell.exec('node src/ts-babel-generator testprojectrollup -r -s', { async: true });
 
     setTimeout(() => {
+      const dir = path.resolve(__dirname, '..', 'testprojectrollup');
 
-      const dir = path.resolve(__dirname, '..', 'helloworld');
+      const rollupConfigExists = fs.existsSync(path.resolve(dir, 'rollup.config.js'));
 
-      const nodeModules = fs.existsSync(path.resolve(dir, 'node_modules'));
-
-      const src = fs.existsSync(path.resolve(dir, 'src'));
-
-      const indexTs = fs.existsSync(path.resolve(dir, 'src', 'index.ts'));
-
-      const packageJSON = fs.existsSync(path.resolve(dir, 'package.json'));
-
-      const packageLockJSON = fs.existsSync(path.resolve(dir, 'package-lock.json'));
-
-      const babelRC = fs.existsSync(path.resolve(dir, '.babelrc'));
-
-      const tsConfig = fs.existsSync(path.resolve(dir, 'tsconfig.json'));
-
-      const rollupConfig = fs.existsSync(path.resolve(dir, 'rollup.config.js'));
-
-      chai.expect(nodeModules).to.be.true &&
-
-        chai.expect(src).to.be.true &&
-
-        chai.expect(src).to.be.true &&
-
-        chai.expect(indexTs).to.be.true &&
-
-        chai.expect(packageJSON).to.be.true &&
-
-        chai.expect(packageLockJSON).to.be.true &&
-
-        chai.expect(babelRC).to.be.true &&
-
-        chai.expect(tsConfig).to.be.true &&
-
-        chai.expect(rollupConfig).to.be.true;
+      chai.expect(rollupConfigExists).to.be.true;
 
       done();
-
-    }, 50000);
-
+    }, 120000);
   });
-
 });
