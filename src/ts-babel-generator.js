@@ -118,7 +118,7 @@ shell.exec('npm install --save-dev typescript @babel/core @babel/cli @babel/plug
  * Install any other dependencies that are needed.
  */
 if (program.webpack) shell.exec('npm install --save-dev webpack webpack-cli babel-loader');
-if (program.rollup) shell.exec('npm install --save-dev rollup rollup-plugin-babel@latest rollup-plugin-node-resolve rollup-plugin-commonjs');
+if (program.rollup) shell.exec('npm install --save-dev rollup rollup-plugin-babel@latest @rollup/plugin-node-resolve @rollup/plugin-commonjs');
 
 /**
  * Set up the initial tsconfig.json config file.
