@@ -144,7 +144,7 @@ typings/
     const year = date.getFullYear();
 
     return `## 0.1.0 / ${year}-${month}-${day}
-    - Initial release`;
+- Initial release`;
   },
 
   /**

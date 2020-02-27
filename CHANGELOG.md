@@ -1,3 +1,6 @@
+## 1.2.2 / 2020-02-26
+- [HOTFIX] Small change to fix spacing issue in CHANGELOG.
+
 ## 1.2.1 / 2020-02-26
 - [HOTFIX] Fixed changelog flag writing the function itself to the CHANGELOG file instead of the returned value of the function.
 
