@@ -1,3 +1,7 @@
+## 1.2.0 / 2020-02-26
+- [FEATURE] Added flag for creating basic CHANGELOG file.
+- [MISC] Updated out of date dependencies to their latest versions.
+
 ## 1.1.0 / 2020-02-12
 - [FEATURE] For rollup, replaced the rollup-plugin-commonjs and rollup-plugin-node-resolve with @rollup/plugin-commonjs and @rollup/plugin-node-resolve.
 - [MISC] Updated dependencies to their latest versions.

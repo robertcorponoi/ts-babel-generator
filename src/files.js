@@ -133,6 +133,21 @@ typings/
   },
 
   /**
+   * Returns a string containing a a basic CHANGELOG file.
+   * 
+   * @returns {string}
+   */
+  changelog() {
+    const date = new Date();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const year = date.getFullYear();
+
+    return `## 0.1.0 / ${year}-${month}-${day}
+    - Initial release`;
+  },
+
+  /**
    * Returns the webpack config as a string.
    * 
    * @returns {string}

@@ -31,6 +31,7 @@ program.arguments('<name>').action(name => projectName = name);
 program.option('-w, --webpack', 'Indicates webpack should be added to the project', false);
 program.option('-r, --rollup', 'Indicates rollup should be added to the project', false);
 program.option('-g, --git', 'Indicates that this project is going to be using git and adds a .gitignore file to it', true);
+program.option('-c, --changelog', 'Creates a basic CHANGELOG file', true);
 program.option('-o, --output <path>', 'The path to the directory to output the project to', process.cwd());
 program.option('-s, --silent', 'Indicates whether output should be hidden or not', true);
 
@@ -62,7 +63,12 @@ fs.ensureFileSync(path.resolve(srcDir, 'index.ts'));
 /**
  * If the git flag was supplied, create the .gitignore file from the string representation of it.
  */
-//if (program.git) fs.writeFileSync(path.resolve(projectDir, '.gitignore'), files.gitignore());
+if (program.git) fs.writeFileSync(path.resolve(projectDir, '.gitignore'), files.gitignore());
+
+/**
+ * If the changelog flag was supplied, create the CHANGELOG.md file.
+ */
+if (program.changelog) fs.writeFileSync(path.resolve(projectDir, 'CHANGELOG.md'), files.changelog);
 
 /**
  * Create and write webpack/rollup configuration files if requested.
