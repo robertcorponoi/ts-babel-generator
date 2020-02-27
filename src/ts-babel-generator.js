@@ -68,7 +68,7 @@ if (program.git) fs.writeFileSync(path.resolve(projectDir, '.gitignore'), files.
 /**
  * If the changelog flag was supplied, create the CHANGELOG.md file.
  */
-if (program.changelog) fs.writeFileSync(path.resolve(projectDir, 'CHANGELOG.md'), files.changelog);
+if (program.changelog) fs.writeFileSync(path.resolve(projectDir, 'CHANGELOG.md'), files.changelog());
 
 /**
  * Create and write webpack/rollup configuration files if requested.

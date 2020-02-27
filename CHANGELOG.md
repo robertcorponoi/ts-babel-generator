@@ -1,3 +1,6 @@
+## 1.2.1 / 2020-02-26
+- [HOTFIX] Fixed changelog flag writing the function itself to the CHANGELOG file instead of the returned value of the function.
+
 ## 1.2.0 / 2020-02-26
 - [FEATURE] Added flag for creating basic CHANGELOG file.
 - [MISC] Updated out of date dependencies to their latest versions.
