@@ -1,3 +1,6 @@
+## 1.2.3 / 2020-04-16
+- [MISC] Updated out-of-date dependencies to their latest versions which also fixed the fixed security vulnerabilities.
+
 ## 1.2.2 / 2020-02-26
 - [HOTFIX] Small change to fix spacing issue in CHANGELOG.
 
