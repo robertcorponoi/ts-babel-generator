@@ -17,15 +17,21 @@ module.exports = {
       version: "0.1.0",
       description: "TODO",
       main: "index.js",
+      module: "module.js",
+      typings: "lib/index.ts",
       scripts: {
-        "tsconfig": "tsc --init --declaration --allowSyntheticDefaultImports --target esnext --outDir lib",
         "type-check": "tsc --noEmit",
         "type-check:watch": "npm run type-check -- --watch",
         "build": "npm run build:types && npm run build:js",
         "build:types": "tsc --emitDeclarationOnly",
-        "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline"
+        "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
+        "bundle": "rollup -c",
+        "bundle:watch": "rollup -c --watch"
       },
-      repository: {},
+      repository: {
+        "type": "git",
+        "url": "TODO"
+      },
       keywords: [],
       author: '',
       license: 'MIT'
@@ -39,15 +45,13 @@ module.exports = {
    */
   babelRC() {
     return {
-      presets: [
-        "@babel/env",
-        "@babel/typescript"
+      "presets": [
+        "@babel/preset-env",
+        "@babel/preset-typescript"
       ],
-      plugins: [
-        "@babel/proposal-class-properties",
-        "@babel/proposal-object-rest-spread"
+      "plugins": [
+        "@babel/plugin-proposal-class-properties"
       ]
-
     }
   },
 
@@ -183,31 +187,20 @@ module.exports = {
    */
   rollupConfig() {
     return `import pkg from './package.json';
-import babel from 'rollup-plugin-babel';
+import babel from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 
 const extensions = ['.js', '.jsx', '.ts', '.tsx'];
 
-const name = 'RollupTypeScriptBabel';
-
 export default {
-  input: './src/index.ts',
-
-  // Specify here external modules which you don't want to include in your bundle (for instance: 'lodash', 'moment' etc.)
-  // https://rollupjs.org/guide/en#external-e-external
-  external: [],
-
-  plugins: [
-    // Allows node_modules resolution
-    resolve({ extensions }),
-
-    // Allow bundling cjs modules. Rollup doesn't understand cjs
-    commonjs(),
-
-    // Compile TypeScript/JavaScript files
-    babel({ extensions, include: ['src/**/*'] }),
-  ],
+    input: './src/index.ts',
+    external: [],
+    plugins: [
+        resolve({ extensions, preferBuiltins: false }),
+        commonjs(),
+        babel({ extensions, include: ['src/**/*'], babelHelpers: 'bundled' }),
+    ],
 
   output: [{
     file: pkg.main,

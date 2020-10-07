@@ -1,3 +1,8 @@
+## 1.3.0 / 2020-10-06
+- [FEATURE] Added repository, typings, and module fields to package.json.
+- [HOTFIX] Fixed an issue with tsconfig file not being created.
+- [MISC] Updated out-of-date dependencies to their latest versions.
+
 ## 1.2.3 / 2020-04-16
 - [MISC] Updated out-of-date dependencies to their latest versions which also fixed the fixed security vulnerabilities.
 
