@@ -2,7 +2,7 @@
 
 const path = require('path');
 const fs = require('fs-extra');
-const shell = require('shelljs');
+const execa = require('execa');
 const program = require('commander');
 
 const files = require('./files');
@@ -10,126 +10,104 @@ const pkg = require('../package.json');
 
 let projectName;
 
-/**
- * Set the program version from the current version of ts-babel-generator from package.json
- */
+// Sets the program version from the version specified in the project's
+// package.json file. This is used when the -v, --version command is used.
 program.version(pkg.version);
 
-/**
- * Define the name of the project to create as an argument.
- */
+// The name of the project has to be specified as an argument and we take the
+// value passed and save it to `projectName.`
 program.arguments('<name>').action(name => projectName = name);
 
 /**
- * Define the options that can be passed to the cli.
+ * Defines the options that can be passed to the cli.
  * 
  * -w, --webpack    Indicates webpack should be added to the project.
  * -r, --rollup     Indicates rollup should be added to the project.
- * -o, --output     The path to the directory to output the project to.
  * -s, --silent     Indicates whether output should be hidden or not.
  */
 program.option('-w, --webpack', 'Indicates webpack should be added to the project', false);
 program.option('-r, --rollup', 'Indicates rollup should be added to the project', false);
 program.option('-g, --git', 'Indicates that this project is going to be using git and adds a .gitignore file to it', true);
 program.option('-c, --changelog', 'Creates a basic CHANGELOG file', true);
-program.option('-o, --output <path>', 'The path to the directory to output the project to', process.cwd());
 program.option('-s, --silent', 'Indicates whether output should be hidden or not', true);
 
-program.parse(process.argv);
-
 /**
- * Get the references to the Objects needed for the configuration files.
- */
-const pkgJSON = files.pkgJSON(projectName);
-const babelRC = files.babelRC();
-
-const projectDir = path.resolve(program.output, projectName);
-
-const pkgJSONDir = path.resolve(projectDir, 'package.json');
-const babelDir = path.resolve(projectDir, '.babelrc');
-
-const srcDir = path.resolve(projectDir, 'src');
-
-/**
- * Generate the base structure of the project.
- */
-if (!program.silent) console.info('Generating project structure...');
-
-fs.ensureDirSync(projectDir);
-fs.ensureDirSync(srcDir);
-
-fs.ensureFileSync(path.resolve(srcDir, 'index.ts'));
-
-/**
- * If the git flag was supplied, create the .gitignore file from the string representation of it.
- */
-if (program.git) fs.writeFileSync(path.resolve(projectDir, '.gitignore'), files.gitignore());
-
-/**
- * If the changelog flag was supplied, create the CHANGELOG.md file.
- */
-if (program.changelog) fs.writeFileSync(path.resolve(projectDir, 'CHANGELOG.md'), files.changelog());
-
-/**
- * Create and write webpack/rollup configuration files if requested.
- */
-if (program.webpack) {
-  const webpackConfig = files.webpackConfig();
-
-  pkgJSON.scripts.bundle = 'webpack';
-
-  const webpackConfigDir = path.resolve(projectDir, 'webpack.config.js');
-
-  if (!program.silent) console.info('Adding webpack...');
-
-  fs.writeFileSync(webpackConfigDir, webpackConfig);
-}
-
-if (program.rollup) {
-  const rollupConfig = files.rollupConfig();
-
-  pkgJSON.scripts.bundle = 'rollup -c';
-  pkgJSON.scripts['bundle:watch'] = 'rollup -c --watch';
-
-  pkgJSON.module = `${projectName}.js`;
-
-  const rollupConfigDir = path.resolve(projectDir, 'rollup.config.js');
-
-  if (!program.silent) console.info('Adding rollup...');
-
-  fs.writeFileSync(rollupConfigDir, rollupConfig);
-}
-
-/**
- * Write all of the files we can at this point.
- */
-if (!program.silent) if (!program.silent) console.info('Writing package.json and .babelrc files...');
-fs.writeFileSync(babelDir, JSON.stringify(babelRC));
-fs.writeFileSync(pkgJSONDir, JSON.stringify(pkgJSON));
-
-/**
- * Change directories of the process so that we are in the root directory of the project.
+ * Parses the command line arguments, creates the necessary directory structure
+ * and adds any additional components specified by the options.
  * 
- * This lets us run npm commands inside of the project to set things up more easily.
+ * @async
  */
-process.chdir(projectDir);
+const main = async () => {
+    // Parse the command line arguments and save the options passed or default
+    // values for any options that have default values.
+    program.parse(process.argv);
+    const options = program.opts();
 
-/**
- * Install the necessary dependencies for typescript and babel.
- */
-if (!program.silent) console.info('Installing dependencies...');
-shell.exec('npm install --save-dev -s typescript @babel/core @babel/cli @babel/plugin-proposal-class-properties @babel/plugin-proposal-object-rest-spread @babel/preset-env @babel/preset-typescript @babel/plugin-proposal-numeric-separator', { silent: true });
+    // Create the project dir.
+    const projectDir = path.resolve(process.cwd(), projectName);
+    fs.ensureDirSync(projectDir);
 
-/**
- * Install any other dependencies that are needed.
- */
-if (program.webpack) shell.exec('npm install --save-dev -s webpack webpack-cli babel-loader');
-if (program.rollup) shell.exec('npm install --save-dev -s rollup @rollup/plugin-babel @rollup/plugin-node-resolve @rollup/plugin-commonjs');
+    // Change to the project directory.
+    process.chdir(projectDir);
 
-/**
- * Set up the initial tsconfig.json config file.
- */
-if (!program.silent) console.info('Creating tsconfig.json file...');
-shell.exec('tsc --init --declaration --allowSyntheticDefaultImports --target esnext --outDir lib', { silent: true });
+    // Create an new npm project at the project directory, parse it as JSON,
+    // then change the project name to the specified project name. Lastly we
+    // write the package.json back to the project directory.
+    await execa('npm', ['init', '-y']);
+    const packageJSONDir = path.resolve(projectDir, 'package.json');
+    const packageJSON = require(packageJSONDir);
+    packageJSON.name = projectName;
 
-if (!program.silent) console.info('Finished!');
+    // Create the src directory along with the starting src/index.ts file.
+    const srcDir = path.resolve(projectDir, 'src');
+    fs.ensureDirSync(srcDir);
+    fs.ensureFileSync(path.resolve(srcDir, 'index.ts'));
+
+    // Create the .babelrc file in the project dir with the static contents.
+    const babelDir = path.resolve(projectDir, '.babelrc');
+    fs.writeFileSync(babelDir, JSON.stringify(files.babelRC(), null, 1));
+
+    // If the git option is used, which is true by default, we create the
+    // .gitignore file.
+    if (options.git) fs.writeFileSync(path.resolve(projectDir, '.gitignore'), files.gitignore());
+
+    // If the changelog flag is used, which is true by default, we create the
+    // CHANGELOG.md file.
+    if (options.changelog) fs.writeFileSync(path.resolve(projectDir, 'CHANGELOG.md'), files.changelog());
+
+    if (options.webpack) {
+        // If the webpack flag is used, we want to add the webpack build script
+        // to the package.json and create the webpack.config.js file.
+        packageJSON.scripts.bundle = 'webpack';
+
+        const webpackConfigDir = path.resolve(projectDir, 'webpack.config.js');
+        fs.writeFileSync(webpackConfigDir, files.webpackConfig());
+    }
+
+    if (options.rollup) {
+        // If the rollup flag is used, we want to add the rollup build script
+        // to the package.json and create the rollup.config.js file.
+        packageJSON.module = `${projectName}.js`;
+        packageJSON.scripts.bundle = 'rollup -c';
+        packageJSON.scripts['bundle:watch'] = 'rollup -c --watch';
+
+        const rollupConfigDir = path.resolve(projectDir, 'rollup.config.js');
+        fs.writeFileSync(rollupConfigDir, files.rollupConfig());
+    }
+
+    // Before we run `npm install` in the project dir, we need to write our new
+    // `package.json` to the project directory.
+    fs.writeFileSync(packageJSONDir, JSON.stringify(packageJSON, null, 1));
+
+    // Install all dependencies.
+    await execa('npm', ['install', '--save-dev', 'typescript', '@babel/core', '@babel/cli', '@babel/plugin-proposal-class-properties', '@babel/plugin-proposal-object-rest-spread', '@babel/preset-env', '@babel/preset-typescript', '@babel/plugin-proposal-numeric-separator']);
+
+    // Set up the tsconfig.json file by running the local tsc initialization script.
+    await execa('./node_modules/.bin/tsc', ['--init', '--declaration', '--allowSyntheticDefaultImports', '--target', 'esnext', '--outDir', 'lib']);
+
+    // If webpack or rollup is chosen then we have to add those dependencies as well.
+    if (options.webpack) await execa('npm', ['install', '--save-dev', 'webpack', 'webpack-cli', 'babel-loader']);
+    if (options.rollup) await execa('npm', ['install', '--save-dev', 'rollup', '@rollup/plugin-babel', '@rollup/plugin-node-resolve', '@rollup/plugin-commonjs']);
+};
+
+main();

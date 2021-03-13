@@ -1,3 +1,11 @@
+## 1.4.0 / 2020-03-13
+- [FEATURE] Replaced shelljs with execa.
+- [FEATURE] Refactored the main function to remove using static package.json contents.
+- [FEATURE] Padded month/day if below 10 in generated CHANGELOG file.
+- [HOTFIX] Fixed issue with tsconfig not being generated.
+- [HOTFIX] Fixed issue with package.json formatting.
+- [MISC] Improved tests
+
 ## 1.3.0 / 2020-10-06
 - [FEATURE] Added repository, typings, and module fields to package.json.
 - [HOTFIX] Fixed an issue with tsconfig file not being created.

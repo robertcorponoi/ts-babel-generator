@@ -4,64 +4,30 @@
  * Contains the string or Object representations of different files that need to be created by the application.
  */
 module.exports = {
-  /**
-   * Returns the Object containing the package.json file.
-   * 
-   * @param {string} name The name of the application being created.
-   * 
-   * @returns {Object}
-   */
-  pkgJSON(name) {
-    return {
-      name: name,
-      version: "0.1.0",
-      description: "TODO",
-      main: "index.js",
-      module: "module.js",
-      typings: "lib/index.ts",
-      scripts: {
-        "type-check": "tsc --noEmit",
-        "type-check:watch": "npm run type-check -- --watch",
-        "build": "npm run build:types && npm run build:js",
-        "build:types": "tsc --emitDeclarationOnly",
-        "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
-        "bundle": "rollup -c",
-        "bundle:watch": "rollup -c --watch"
-      },
-      repository: {
-        "type": "git",
-        "url": "TODO"
-      },
-      keywords: [],
-      author: '',
-      license: 'MIT'
-    };
-  },
+    /**
+     * Returns the Object containing the .babelrc file.
+     * 
+     * @returns {Object}
+     */
+    babelRC() {
+        return {
+            "presets": [
+                "@babel/preset-env",
+                "@babel/preset-typescript"
+            ],
+            "plugins": [
+                "@babel/plugin-proposal-class-properties"
+            ]
+        }
+    },
 
-  /**
-   * Returns the Object containing the .babelrc file.
-   * 
-   * @returns {Object}
-   */
-  babelRC() {
-    return {
-      "presets": [
-        "@babel/preset-env",
-        "@babel/preset-typescript"
-      ],
-      "plugins": [
-        "@babel/plugin-proposal-class-properties"
-      ]
-    }
-  },
-
-  /**
-   * Returns a string containing a gitignore file for Node.js
-   * 
-   * @returns {string}
-   */
-  gitignore() {
-    return `# Logs
+    /**
+     * Returns a string containing a gitignore file for Node.js
+     * 
+     * @returns {string}
+     */
+    gitignore() {
+        return `# Logs
 logs
 *.log
 npm-debug.log*
@@ -134,30 +100,30 @@ typings/
 
 # Serverless directories
 .serverless`
-  },
+    },
 
-  /**
-   * Returns a string containing a a basic CHANGELOG file.
-   * 
-   * @returns {string}
-   */
-  changelog() {
-    const date = new Date();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const year = date.getFullYear();
+    /**
+     * Returns a string containing a a basic CHANGELOG file.
+     * 
+     * @returns {string}
+     */
+    changelog() {
+        const date = new Date();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const year = date.getFullYear();
 
-    return `## 0.1.0 / ${year}-${month}-${day}
+        return `## 0.1.0 / ${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}
 - Initial release`;
-  },
+    },
 
-  /**
-   * Returns the webpack config as a string.
-   * 
-   * @returns {string}
-   */
-  webpackConfig() {
-    return `const path = require('path');
+    /**
+     * Returns the webpack config as a string.
+     * 
+     * @returns {string}
+     */
+    webpackConfig() {
+        return `const path = require('path');
 
 module.exports = {
   // Change to your "entry-point".
@@ -178,15 +144,15 @@ module.exports = {
     }],
   }
 };`
-  },
+    },
 
-  /**
-   * Returns the rollup config as a string.
-   * 
-   * @returns {string}
-   */
-  rollupConfig() {
-    return `import pkg from './package.json';
+    /**
+     * Returns the rollup config as a string.
+     * 
+     * @returns {string}
+     */
+    rollupConfig() {
+        return `import pkg from './package.json';
 import babel from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
@@ -217,5 +183,5 @@ export default {
     globals: {},
   }],
 };`
-  }
+    }
 };
