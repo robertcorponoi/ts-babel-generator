@@ -1,3 +1,6 @@
+## 1.4.1 / 2020-03-13
+- [FEATURE] Added logs.
+
 ## 1.4.0 / 2020-03-13
 - [FEATURE] Replaced shelljs with execa.
 - [FEATURE] Refactored the main function to remove using static package.json contents.

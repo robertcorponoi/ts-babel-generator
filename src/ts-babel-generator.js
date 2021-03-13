@@ -43,6 +43,8 @@ const main = async () => {
     program.parse(process.argv);
     const options = program.opts();
 
+    if (!options.silent) console.info('Creating project');
+
     // Create the project dir.
     const projectDir = path.resolve(process.cwd(), projectName);
     fs.ensureDirSync(projectDir);
@@ -78,6 +80,8 @@ const main = async () => {
     if (options.webpack) {
         // If the webpack flag is used, we want to add the webpack build script
         // to the package.json and create the webpack.config.js file.
+        if (!options.silent) console.info('Adding Webpack');
+
         packageJSON.scripts.bundle = 'webpack';
 
         const webpackConfigDir = path.resolve(projectDir, 'webpack.config.js');
@@ -87,6 +91,8 @@ const main = async () => {
     if (options.rollup) {
         // If the rollup flag is used, we want to add the rollup build script
         // to the package.json and create the rollup.config.js file.
+        if (!options.silent) console.info('Creating Rollup');
+
         packageJSON.module = `${projectName}.js`;
         packageJSON.scripts.bundle = 'rollup -c';
         packageJSON.scripts['bundle:watch'] = 'rollup -c --watch';
@@ -98,6 +104,8 @@ const main = async () => {
     // Before we run `npm install` in the project dir, we need to write our new
     // `package.json` to the project directory.
     fs.writeFileSync(packageJSONDir, JSON.stringify(packageJSON, null, 1));
+
+    if (!options.silent) console.info('Installing dependencies');
 
     // Install all dependencies.
     await execa('npm', ['install', '--save-dev', 'typescript', '@babel/core', '@babel/cli', '@babel/plugin-proposal-class-properties', '@babel/plugin-proposal-object-rest-spread', '@babel/preset-env', '@babel/preset-typescript', '@babel/plugin-proposal-numeric-separator']);
